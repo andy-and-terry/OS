@@ -5,7 +5,7 @@ Very small Open-Source OS demo (DOS-like) using HTML + Node.js.
 ## Run
 
 ```bash
-node /home/runner/work/OS/OS/server.js
+node server.js
 ```
 
 Open: `http://localhost:3000`
