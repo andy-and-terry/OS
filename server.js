@@ -5,7 +5,7 @@ http.createServer((req,res)=>{
   let f=u==='/'?'index.html':decodeURIComponent(u).replace(/^\/+/,'');
   f=p.resolve(root,f);
   const rel=p.relative(root,f);
-  if(rel.startsWith('..')||p.isAbsolute(rel)) return res.writeHead(403).end('Forbidden');
+  if(rel==='..'||rel.startsWith('..'+p.sep)||p.isAbsolute(rel)) return res.writeHead(403).end('Forbidden');
   fs.readFile(f,(e,d)=>{
     if(e) return res.writeHead(404).end('Not found');
     const ext=p.extname(f);
