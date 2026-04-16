@@ -1,9 +1,11 @@
 const http=require('http'),fs=require('fs'),p=require('path');
 const root=p.join(__dirname,'public');
 http.createServer((req,res)=>{
-  let f=req.url==='/'?'/index.html':req.url;
-  f=p.normalize(p.join(root,f));
-  if(!f.startsWith(root)) return res.writeHead(403).end('Forbidden');
+  const u=((req.url||'/').split('?')[0]||'/');
+  let f=u==='/'?'index.html':decodeURIComponent(u).replace(/^\/+/,'');
+  f=p.resolve(root,f);
+  const rel=p.relative(root,f);
+  if(rel.startsWith('..')||p.isAbsolute(rel)) return res.writeHead(403).end('Forbidden');
   fs.readFile(f,(e,d)=>{
     if(e) return res.writeHead(404).end('Not found');
     const ext=p.extname(f);
