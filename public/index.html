@@ -39,7 +39,7 @@
   <button class="btn" id="quitBtn">Quit</button>
 </div>
 
-<section id="commandsWindow" class="window terminal-window hidden" aria-label="Commands window">
+<section id="commandsWindow" class="window terminal-window hidden" aria-label="Commands window" role="dialog">
   <div class="title"><span>Commands</span><button class="close" data-close="commands" aria-label="Close commands">×</button></div>
   <div class="terminal">
     <div id="terminalOutput"></div>
@@ -47,7 +47,7 @@
   </div>
 </section>
 
-<section id="imageWindow" class="window image-window hidden" aria-label="Image editor window">
+<section id="imageWindow" class="window image-window hidden" aria-label="Image editor window" role="dialog">
   <div class="title"><span>Image Editor</span><button class="close" data-close="image" aria-label="Close image editor">×</button></div>
   <div class="image-tools">
     <label>Color <input type="color" id="color" value="#1f2937"></label>
@@ -84,6 +84,11 @@
       'notes.txt': 'Try: help, open image, touch file.txt'
     }
   };
+  const helpText = [
+    'help, cls, clear, echo, date, time, ver, ls, dir, cat <file>,',
+    'pwd, whoami, uptime, touch <file>, write <file> <text>,',
+    'del <file>, rm <file>, rename <old> <new>, open <commands|image>, quit'
+  ].join(' ');
 
   function writeLine(text = '') {
     terminalOutput.append(document.createTextNode(text + '\n'));
@@ -138,6 +143,16 @@
     return keys.length ? keys.join('  ') : '(empty)';
   }
 
+  function formatUptime(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+    if (minutes > 0) return `${minutes}m ${seconds}s`;
+    return `${seconds}s`;
+  }
+
   function runCommand(raw) {
     const line = raw.trim();
     writeLine(state.cwd + '> ' + line);
@@ -146,7 +161,7 @@
     const command = parts[0].toLowerCase();
     const args = parts.slice(1);
 
-    if (command === 'help') writeLine('help, cls, clear, echo, date, time, ver, ls, dir, cat <file>, pwd, whoami, uptime, touch <file>, write <file> <text>, del <file>, rename <old> <new>, open <commands|image>, quit');
+    if (command === 'help') writeLine(helpText);
     else if (command === 'cls' || command === 'clear') terminalOutput.textContent = '';
     else if (command === 'echo') writeLine(args.join(' '));
     else if (command === 'date') writeLine(new Date().toDateString());
@@ -156,7 +171,7 @@
     else if (command === 'cat') writeLine(state.files[args[0]] ?? 'File not found');
     else if (command === 'pwd') writeLine(state.cwd);
     else if (command === 'whoami') writeLine(state.user);
-    else if (command === 'uptime') writeLine(Math.floor((Date.now() - state.startedAt.getTime()) / 1000) + 's');
+    else if (command === 'uptime') writeLine(formatUptime(Date.now() - state.startedAt.getTime()));
     else if (command === 'touch') {
       if (!args[0]) writeLine('Usage: touch <file>');
       else {
