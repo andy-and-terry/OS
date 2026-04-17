@@ -95,7 +95,7 @@
   }
 
   function printBanner() {
-    writeLine('Open-Source OS v3DOSwDESKTOP');
+    writeLine('Open-Source OS v3 DOS Desktop');
     writeLine('Type HELP and press Enter.');
   }
 
@@ -151,7 +151,7 @@
     else if (command === 'echo') writeLine(args.join(' '));
     else if (command === 'date') writeLine(new Date().toDateString());
     else if (command === 'time') writeLine(new Date().toLocaleTimeString());
-    else if (command === 'ver') writeLine('Open-Source OS v3DOSwDESKTOP');
+    else if (command === 'ver') writeLine('Open-Source OS v3 DOS Desktop');
     else if (command === 'ls' || command === 'dir') writeLine(fileList());
     else if (command === 'cat') writeLine(state.files[args[0]] ?? 'File not found');
     else if (command === 'pwd') writeLine(state.cwd);
