@@ -87,7 +87,7 @@
   const helpText = [
     'help, cls, clear, echo, date, time, ver, ls, dir, cat <file>,',
     'pwd, whoami, uptime, touch <file>, write <file> <text>,',
-    'del <file>, rm <file>, rename <old> <new>, open <commands|image>, quit'
+    'del <file>, rm <file>, rename <old> <new>, open <commands|cmd|image|paint>, quit'
   ].join(' ');
 
   function writeLine(text = '') {
@@ -95,8 +95,12 @@
     terminalOutput.scrollTop = terminalOutput.scrollHeight;
   }
 
+  function promptString() {
+    return state.cwd + '> ';
+  }
+
   function setPrompt() {
-    promptLabel.innerHTML = state.cwd + '&gt;';
+    promptLabel.textContent = promptString();
   }
 
   function printBanner() {
@@ -155,7 +159,7 @@
 
   function runCommand(raw) {
     const line = raw.trim();
-    writeLine(state.cwd + '> ' + line);
+    writeLine(promptString() + line);
     if (!line) return;
     const parts = line.split(/\s+/);
     const command = parts[0].toLowerCase();
@@ -204,7 +208,7 @@
       const target = (args[0] || '').toLowerCase();
       if (target === 'commands' || target === 'cmd') openWindow('commands');
       else if (target === 'image' || target === 'paint') openWindow('image');
-      else writeLine('Usage: open <commands|image>');
+      else writeLine('Usage: open <commands|cmd|image|paint>');
     } else if (command === 'quit' || command === 'exit' || command === 'shutdown') {
       powerOff();
     } else writeLine('Bad command or file name');
