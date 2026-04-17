@@ -2,4 +2,5 @@ CHANGELOG
 ----------
   - setup and install automatically adds files to regristy
   - new OS icon added
+  - organised public/index.html
 ----------
