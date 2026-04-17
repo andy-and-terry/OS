@@ -3,4 +3,6 @@ CHANGELOG
   - setup and install automatically adds files to regristy
   - new OS icon added
   - organised public/index.html
+  - upgraded DOS shell into desktop mode with Commands, Image Editor, and Quit tools
+  - added extra DOS commands (clear, dir, pwd, whoami, uptime, touch, write, del/rm, rename, open, quit)
 ----------
