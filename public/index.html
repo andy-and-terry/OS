@@ -106,6 +106,7 @@
       if (!response.ok) return;
       const imageName = (await response.text()).trim();
       if (!allowedImagePattern.test(imageName)) return;
+      if (imageName.includes('..')) return;
       const imageUrl = `desktopimages/${encodeURIComponent(imageName)}`;
       const img = new Image();
       img.onload = () => {
