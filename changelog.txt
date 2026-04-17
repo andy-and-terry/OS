@@ -1,5 +1,6 @@
 CHANGELOG
 ----------
   - upgraded DOS shell into desktop mode with Commands, Image Editor, and Quit tools
-  - added extra DOS commands (clear, dir, pwd, whoami, uptime, touch, write, del/rm, rename, open, quit)
+  - added more DOS commands (clear, dir, pwd, whoami, uptime, touch, write, del/rm, rename, open, quit type, copy, find, count, history, mem)
+  - added desktop background loading via desktopimages/imagename.txt with black fallback when missing/invalid
 ----------

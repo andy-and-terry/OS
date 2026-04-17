@@ -5,7 +5,7 @@
   :root{--panel:#111;--line:#2a2a2a;--text:#d8d8d8;--accent:#4aa3ff}
   *{box-sizing:border-box}
   body{margin:0;height:100vh;overflow:hidden;font:14px/1.4 monospace;background:#0f1115;color:var(--text)}
-  #desktop{height:calc(100vh - 40px);background:linear-gradient(140deg,#123259,#233f75);padding:14px;display:flex;gap:14px;align-items:flex-start}
+  #desktop{height:calc(100vh - 40px);background:#000;background-size:cover;background-position:center;background-repeat:no-repeat;padding:14px;display:flex;gap:14px;align-items:flex-start}
   .icon{width:90px;padding:10px 6px;border:1px solid transparent;border-radius:8px;text-align:center;cursor:pointer;color:#fff;user-select:none}
   .icon:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28)}
   .ico{display:block;font-size:27px;margin-bottom:6px}
@@ -85,10 +85,39 @@
     }
   };
   const helpText = [
-    'help, cls, clear, echo, date, time, ver, ls, dir, cat <file>,',
+    'help, cls, clear, echo, date, time, ver, ls, dir, cat/type <file>,',
     'pwd, whoami, uptime, touch <file>, write <file> <text>,',
-    'del <file>, rm <file>, rename <old> <new>, open <commands|cmd|image|paint>, quit'
+    'del <file>, rm <file>, rename <old> <new>, copy <src> <dest>,',
+    'find <text> <file>, count <file>, history, mem,',
+    'open <commands|cmd|image|paint>, quit'
   ].join(' ');
+
+  const allowedImagePattern = /^[a-zA-Z0-9._-]+\.(png|jpg|jpeg|gif|webp|bmp|svg)$/i;
+
+  function useBlackDesktopBackground() {
+    desktop.style.backgroundColor = '#000';
+    desktop.style.backgroundImage = 'none';
+  }
+
+  async function applyDesktopBackground() {
+    useBlackDesktopBackground();
+    try {
+      const response = await fetch('desktopimages/imagename.txt', { cache: 'no-store' });
+      if (!response.ok) return;
+      const imageName = (await response.text()).trim();
+      if (!allowedImagePattern.test(imageName)) return;
+      const imageUrl = `desktopimages/${encodeURIComponent(imageName)}`;
+      const img = new Image();
+      img.onload = () => {
+        desktop.style.backgroundColor = '#000';
+        desktop.style.backgroundImage = `url("${imageUrl}")`;
+      };
+      img.onerror = useBlackDesktopBackground;
+      img.src = imageUrl;
+    } catch {
+      useBlackDesktopBackground();
+    }
+  }
 
   function writeLine(text = '') {
     terminalOutput.append(document.createTextNode(text + '\n'));
@@ -172,7 +201,7 @@
     else if (command === 'time') writeLine(new Date().toLocaleTimeString());
     else if (command === 'ver') writeLine('Open-Source OS v3 DOS Desktop');
     else if (command === 'ls' || command === 'dir') writeLine(fileList());
-    else if (command === 'cat') writeLine(state.files[args[0]] ?? 'File not found');
+    else if (command === 'cat' || command === 'type') writeLine(state.files[args[0]] ?? 'File not found');
     else if (command === 'pwd') writeLine(state.cwd);
     else if (command === 'whoami') writeLine(state.user);
     else if (command === 'uptime') writeLine(formatUptime(Date.now() - state.startedAt.getTime()));
@@ -204,6 +233,38 @@
         delete state.files[args[0]];
         writeLine('Renamed');
       }
+    } else if (command === 'copy') {
+      if (args.length < 2) writeLine('Usage: copy <src> <dest>');
+      else if (!(args[0] in state.files)) writeLine('File not found');
+      else {
+        state.files[args[1]] = state.files[args[0]];
+        writeLine('Copied');
+      }
+    } else if (command === 'find') {
+      if (args.length < 2) writeLine('Usage: find <text> <file>');
+      else if (!(args[1] in state.files)) writeLine('File not found');
+      else {
+        const found = state.files[args[1]].toLowerCase().includes(args[0].toLowerCase());
+        writeLine(found ? 'Found' : 'Not found');
+      }
+    } else if (command === 'count') {
+      if (!args[0]) writeLine('Usage: count <file>');
+      else if (!(args[0] in state.files)) writeLine('File not found');
+      else {
+        const content = state.files[args[0]];
+        const lines = content.length === 0 ? 0 : content.split(/\r?\n/).length;
+        const trimmed = content.trim();
+        const words = trimmed ? trimmed.split(/\s+/).length : 0;
+        const chars = content.length;
+        writeLine(`Lines: ${lines} Words: ${words} Chars: ${chars}`);
+      }
+    } else if (command === 'history') {
+      if (!state.history.length) writeLine('(empty)');
+      else state.history.forEach((entry, index) => writeLine(`${index + 1}: ${entry}`));
+    } else if (command === 'mem') {
+      const fileNames = Object.keys(state.files);
+      const byteCount = fileNames.reduce((sum, name) => sum + state.files[name].length, 0);
+      writeLine(`Files: ${fileNames.length}  Bytes: ${byteCount}`);
     } else if (command === 'open' || command === 'start') {
       const target = (args[0] || '').toLowerCase();
       if (target === 'commands' || target === 'cmd') openWindow('commands');
@@ -287,5 +348,6 @@
 
   setPrompt();
   printBanner();
+  applyDesktopBackground();
   openWindow('commands');
 </script>
