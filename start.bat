@@ -9,5 +9,6 @@ TASKKILL /F /IM explorer.exe
 node server.js
 echo Starting node.js server...
 timeout /t 50 >nul
-start "" "%~dp0/public/script.js"
+start chrome localhost:3000
 echo If the system does not start soon, read the README and do the installation manually.
+PAUSE
