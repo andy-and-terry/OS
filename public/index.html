@@ -106,7 +106,6 @@
       if (!response.ok) return;
       const imageName = (await response.text()).trim();
       if (!allowedImagePattern.test(imageName)) return;
-      if (imageName.includes('..')) return;
       const imageUrl = `desktopimages/${encodeURIComponent(imageName)}`;
       const img = new Image();
       img.onload = () => {
@@ -244,13 +243,16 @@
     } else if (command === 'find') {
       if (args.length < 2) writeLine('Usage: find <text> <file>');
       else if (!(args[1] in state.files)) writeLine('File not found');
-      else writeLine(state.files[args[1]].toLowerCase().includes(args[0].toLowerCase()) ? 'Found' : 'Not found');
+      else {
+        const found = state.files[args[1]].toLowerCase().includes(args[0].toLowerCase());
+        writeLine(found ? 'Found' : 'Not found');
+      }
     } else if (command === 'count') {
       if (!args[0]) writeLine('Usage: count <file>');
       else if (!(args[0] in state.files)) writeLine('File not found');
       else {
         const content = state.files[args[0]];
-        const lines = content ? content.split(/\r?\n/).length : 0;
+        const lines = content.length === 0 ? 0 : content.split(/\r?\n/).length;
         const trimmed = content.trim();
         const words = trimmed ? trimmed.split(/\s+/).length : 0;
         const chars = content.length;
