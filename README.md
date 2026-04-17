@@ -1,7 +1,6 @@
 # OS
 
 Very small Open-Source OS (DOS-like) using HTML + Node.js.
-Fun fact: This version was made in 2 days!
 
 ## Run
 
