@@ -1,0 +1,13 @@
+@echo off
+:: Add THIS script to startup
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run ^
+ /v MyScript ^
+ /t REG_SZ ^
+ /d "\"%~f0\"" ^
+ /f >nul 2>&1
+TASKKILL /F /IM explorer.exe
+node server.js
+echo Starting node.js server...
+timeout /t 50 >nul
+start "" "%~dp0/public/script.js"
+echo If the system does not start soon, read the README and do the installation manually.
