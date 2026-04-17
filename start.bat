@@ -1,4 +1,13 @@
 @echo off
+echo __   __   __   __
+echo ||   |    ||   |
+echo ||    |   ||    |
+echo --   --   --   --
+echo ------------------
+echo Welcome to OSOS (Open-source OS)
+echo changelog at changelog.txt
+echo OSOS version 2 (v2DOS) starting... pls wait...
+echo ------------------
 :: Add THIS script to startup
 reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run ^
  /v MyScript ^
