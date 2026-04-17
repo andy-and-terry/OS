@@ -25,7 +25,7 @@ Open: `http://localhost:3000`
 - `time`
 - `ver`
 - `ls` / `dir`
-- `cat <file>`
+- `cat <file>` / `type <file>`
 - `pwd`
 - `whoami`
 - `uptime`
@@ -33,5 +33,16 @@ Open: `http://localhost:3000`
 - `write <file> <text>`
 - `del <file>` / `rm <file>`
 - `rename <old> <new>`
+- `copy <src> <dest>`
+- `find <text> <file>`
+- `count <file>`
+- `history`
+- `mem`
 - `open <commands|image>`
 - `quit`
+
+## Desktop background image
+
+- Desktop background image is selected from `public/desktopimages/imagename.txt`
+- Put the image file in `public/desktopimages/` and set `imagename.txt` to that filename
+- If `imagename.txt` is missing/invalid, or the selected image is missing/invalid, desktop uses a black placeholder background
