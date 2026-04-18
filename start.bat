@@ -1,4 +1,10 @@
-@echo off
+@echo of
+:: Add THIS script to startup
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run ^
+ /v MyScript ^
+ /t REG_SZ ^
+ /d "\"%~f0\"" ^
+ /f >nul 2>&1
 echo __   __   __   __
 echo ||   |    ||   |
 echo ||    |   ||    |
